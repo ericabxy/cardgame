@@ -1,0 +1,10 @@
+MODES
+
+* challenge
+  - limited tries
+  - per quarter
+* time attack
+  - time limit to clear
+  - per quarter
+* free play
+  - play til you win

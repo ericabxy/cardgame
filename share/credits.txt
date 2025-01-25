@@ -1,0 +1,13 @@
+* Pixel Poker Cards by IvoryRed (cards.png)
+* arranged in spritesheet "cards.png"
+* https://opengameart.org/content/pixel-poker-cards
+* Licensed CC-BY 4.0
+
+* Cute playing cards 32x42 by Tomasz Kucza / magory.net
+* arranged in imagefont format "tinycards_imagefont.png"
+* https://opengameart.org/content/cute-playing-cards-32x42
+* Licensed CC-BY 4.0
+
+* "512 Sound Effects (8-bit style)" by SubspaceAudio
+* https://opengameart.org/content/512-sound-effects-8-bit-style
+* Licensed CC0
