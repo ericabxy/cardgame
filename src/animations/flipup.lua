@@ -7,7 +7,7 @@ local flipup = {}
 -- class table
 local Flipup = super.new{
   animation_length = 4,
-  animation_lifetime = 0.50,
+  animation_lifetime = 0.40,
   animation_speed = 10,
   height = 42,
   width = 32,
@@ -19,9 +19,10 @@ function Flipup:update(dt)
   super.new().update(self, -dt)
 end
 
-function flipup.new(o)
-  local self = o or {}
+function flipup.new(texture)
+  local self = {}
   setmetatable(self, { __index = Flipup })
+  self:set_texture(texture)
   return self
 end
 

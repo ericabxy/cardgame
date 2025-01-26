@@ -11,8 +11,7 @@ local game = require('src.concentration')
 local textfont = require('dos_8x8_imagefont')
 
 local matchsnd, revealsnd, misssnd = unpack(audio)
-local card_animation = flipdown.new()
-card_animation:set_texture(cardanim)
+local card_animation = flipup.new(cardanim)
 local game0 = game.new()
 matchsnd:setVolume(0.40)
 misssnd:setVolume(0.40)
@@ -45,7 +44,11 @@ function love.update(dt)
   local x, y = love.joystick.getAxis(1, 1), love.joystick.getAxis(1, 2)
   game0:trackball_move(x * mag, y * mag)
   end
-  card_animation:update(dt)
+  if card_animation then
+    if card_animation:update(dt) == 'done' then
+      card_animation = false
+    end
+  end
 end
 
 function love.draw()
@@ -78,6 +81,7 @@ function love.joystickpressed(_, b)
        game0:return_unmatched_cards() and
        game0:button_reveal() then
       revealsnd:play()
+      card_animation = flipup.new(cardanim)
     end
   end
 end

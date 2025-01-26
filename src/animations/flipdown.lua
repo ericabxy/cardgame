@@ -19,9 +19,10 @@ function Flipdown:update(dt)
   super.new().update(self, dt)
 end
 
-function flipdown.new(o)
-  local self = o or {}
+function flipdown.new(texture)
+  local self = {}
   setmetatable(self, { __index = Flipdown })
+  self:set_texture(texture)
   return self
 end
 
