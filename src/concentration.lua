@@ -2,9 +2,9 @@
 -- @classmod concentration
 local board = require('src.concentration.matching_board')
 local charmap = require('src.gamelib.charmap')
-local flipdown = require('src.animations.flipdown')
-local flipup = require('src.animations.flipup')
-local flyingtext = require('src.animations.flyingtext')
+local flipdown = require('src.concentration.flipdown')
+local flipup = require('src.concentration.flipup')
+local flyingtext = require('src.concentration.flyingtext')
 
 local concentration = {}
 
@@ -19,13 +19,16 @@ local Concentration = {
   cursor = {x = 160, y = 100},
   matches = 0,
   score = 0,
-  sprites = {},  --
+  sourcebg = false,  --background music
+  sourcefx = false,  --sounds to play
+  sprites = {},  --cursors and arrows
   tries = {0, 45}
 }
 
 function Concentration:button_reveal(b)
   local x, y = self.board:reveal(self.cursor.x, self.cursor.y)
   if x and y then
+    self.sourcefx[1]:play()
     table.insert(self.animations, flipup.new{
       x = x, y = y, texture = self.cardanim
     })
@@ -40,24 +43,24 @@ end
 function Concentration:check_for_matches()
   if self.board:domatch() then
     self.score = self.score + 100
-    return true
+    self.sourcefx[3]:play()
   else
     self.tries[1] = self.tries[1] + 1
     table.insert(self.animations, flyingtext.new{map = 'NO MATCH'})
-    return false
+    self.sourcefx[2]:play()
   end
 end
 
 function Concentration:return_unmatched_cards()
   local coords = self.board:conceal()
   for _, xy in ipairs(coords) do
+    self.sourcefx[1]:play()
     table.insert(self.animations, flipdown.new{
       x = xy[1],
       y = xy[2],
       texture = self.cardanim
     })
   end
-  if coords then return {} end
 end
 
 -- verify data integrity and initialize components
@@ -68,6 +71,7 @@ function Concentration:startup()
   print('checking graphics data...')
   print('cardanim... ', self.cardanim and 'OK' or 'MISSING')
   print('cardfont... ', self.cardfont and 'OK' or 'MISSING')
+  print('sourcefx... ', self.sourcefx and 'OK' or 'MISSING')
   self.board = board.new()
   self.board.charmap_t.font = self.cardfont
   self.charmap0 = charmap.new{font = self.cardfont}
