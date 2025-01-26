@@ -22,11 +22,13 @@ local MatchingBoard = {
 }
 
 function MatchingBoard:conceal()
+  local coords = {}
   for x = #self.unreveal, 1, -1 do
     self.charmap_t:poke(self.unreveal[x], '@')
+    table.insert(coords, {self.charmap_t:coordinates( self.unreveal[x] )})
     table.remove(self.unreveal, x)
   end
-  return true
+  return coords
 end
 
 function MatchingBoard:domatch()
@@ -56,7 +58,7 @@ function MatchingBoard:reveal(x, y)
   local card = self.deck.cards[n]
   self.charmap_t:poke(n, card:get_ascii( ))
   table.insert(self.revealed, n)
-  return true
+  return self.charmap_t:coordinates(n)
 end
 
 function MatchingBoard:setup()

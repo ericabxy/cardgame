@@ -1,22 +1,34 @@
---- a short description
+--- a patience game of matching hidden cards
 -- @classmod concentration
 local board = require('src.concentration.matching_board')
+local charmap = require('src.gamelib.charmap')
+local flipdown = require('src.animations.flipdown')
+local flipup = require('src.animations.flipup')
+local flyingtext = require('src.animations.flyingtext')
 
 local concentration = {}
 
 -- class table
 local Concentration = {
+  animations = {},  --sprite and text animations
   width = 320,
   height = 200,
   board = board.new(),
+  cardanim = false,  --sprite sheet for card animations
+  cardfont = false,  --font for drawing cards on board
   cursor = {x = 160, y = 100},
   matches = 0,
   score = 0,
+  sprites = {},  --
   tries = {0, 45}
 }
 
 function Concentration:button_reveal(b)
-  if self.board:reveal(self.cursor.x, self.cursor.y) then
+  local x, y = self.board:reveal(self.cursor.x, self.cursor.y)
+  if x and y then
+    table.insert(self.animations, flipup.new{
+      x = x, y = y, texture = self.cardanim
+    })
     return true
   end
 end
@@ -31,21 +43,34 @@ function Concentration:check_for_matches()
     return true
   else
     self.tries[1] = self.tries[1] + 1
+    table.insert(self.animations, flyingtext.new{map = 'NO MATCH'})
     return false
   end
 end
 
 function Concentration:return_unmatched_cards()
-  if self.board:conceal() then
-    return true
+  local coords = self.board:conceal()
+  for _, xy in ipairs(coords) do
+    table.insert(self.animations, flipdown.new{
+      x = xy[1],
+      y = xy[2],
+      texture = self.cardanim
+    })
   end
+  if coords then return {} end
 end
 
-function Concentration:startup(...)
+-- verify data integrity and initialize components
+function Concentration:startup()
 --check args for data here, paint errors if missing
 --needs: cardfont
 --needs: sound1 and sound2 (maybe)
+  print('checking graphics data...')
+  print('cardanim... ', self.cardanim and 'OK' or 'MISSING')
+  print('cardfont... ', self.cardfont and 'OK' or 'MISSING')
   self.board = board.new()
+  self.board.charmap_t.font = self.cardfont
+  self.charmap0 = charmap.new{font = self.cardfont}
   self.board:setup()
 end
 
@@ -61,7 +86,7 @@ function Concentration:trackball_move(x, y)
 end
 
 -- absolute trackball position
-function Concentration:trackball_set(x, y)
+function Concentration:trackball_goto(x, y)
   self.cursor.x = x
   self.cursor.y = y
   self:trackball_move(0, 0)

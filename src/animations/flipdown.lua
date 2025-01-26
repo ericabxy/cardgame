@@ -13,16 +13,23 @@ local Flipdown = super.new{
   width = 32,
 }
 
+function Flipdown:draw()
+  love.graphics.setColor(0, 0, 0)
+  love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
+  love.graphics.setColor(lutro and {255, 255, 255} or {1, 1, 1})
+  super.new().draw(self)
+end
+
 function Flipdown:update(dt)
   self.animation_lifetime = self.animation_lifetime - dt
   if self.animation_lifetime < 0 then return 'done' end
   super.new().update(self, dt)
 end
 
-function flipdown.new(texture)
-  local self = {}
+function flipdown.new(o)
+  local self = o or {}
   setmetatable(self, { __index = Flipdown })
-  self:set_texture(texture)
+  self:set_texture(o.texture)
   return self
 end
 

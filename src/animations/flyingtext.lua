@@ -12,6 +12,9 @@ local Flyingtext = {
 }
 
 function Flyingtext:draw()
+  love.graphics.setColor(0, 0, 0)
+  love.graphics.rectangle('fill', self.x, self.y, 56, 8)
+  love.graphics.setColor(lutro and {255, 255, 255} or {1, 1, 1})
   love.graphics.print(self.map, self.x, self.y)
 end
 
@@ -23,7 +26,7 @@ end
 function Flyingtext:update(dt)
   self.timer = self.timer - dt
   self.y = self.y + dt * self.speed
-  return self.timer > 0
+  return self.timer < 0 and 'done'
 end
 
 function flyingtext.new(o)
