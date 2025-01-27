@@ -1,5 +1,0 @@
-STRUCTURE
-
-anything that deals with assets in "share" should be toplevel
-
-TODO: tell asset loaders where "share" is?

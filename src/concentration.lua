@@ -37,7 +37,9 @@ function Concentration:button_reveal(b)
 end
 
 function Concentration:is_ready_to_match()
-  return #self.board.revealed >= self.board.nmatch
+  if not self.sourcefx[1]:isPlaying() then
+    return #self.board.revealed >= self.board.nmatch
+  end
 end
 
 function Concentration:check_for_matches()

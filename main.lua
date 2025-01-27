@@ -1,30 +1,37 @@
-if not lutro then love.mouse.setVisible(false) end
-
+local blackjack = require('src.blackjack')
 local cardfont = require('tinycards_imagefont')
 local cursor_img, cursor_quad = unpack(require('cursorpack'))
 local game = require('src.concentration')
 local textfont = require('dos_8x8_imagefont')
 
-local revealsnd, misssnd, matchsnd = unpack(audio)
+local SCALE = lutro and 1.0 or 2.5
+if not lutro then love.mouse.setVisible(false) end
 local game0 = game.new{
   cardanim = require('tinycards_animation'),
   cardfont = require('tinycards_imagefont'),
   sourcefx = require('audio_sources'),
 }
-local SCALE = lutro and 1.0 or 2.5
+local game1 = blackjack.new{
+  cardsimg = require('cards_texture')
+}
+game1:Blackjack()
 
 function love.load()
   game0:startup()
 end
 
 function love.update(dt)
-  if not revealsnd:isPlaying() and game0:is_ready_to_match() then
+  if game0:is_ready_to_match() then
     game0:check_for_matches()
   end
   if lutro then
-  local mag = 2.00
-  local x, y = love.joystick.getAxis(1, 1), love.joystick.getAxis(1, 2)
-  game0:trackball_move(x * mag, y * mag)
+    local mag = 2.00
+    local x, y = love.joystick.getAxis(1, 1), love.joystick.getAxis(1, 2)
+    if love.joystick.isDown(1, 7) then x = -1
+    elseif love.joystick.isDown(1, 8) then x = 1 end
+    if love.joystick.isDown(1, 5) then y = -1
+    elseif love.joystick.isDown(1, 6) then y = 1 end
+    game0:trackball_move(x * mag, y * mag)
   end
   for x = #game0.animations, 1, -1 do
     local anim = game0.animations[x]
@@ -56,10 +63,11 @@ function love.draw()
   for _, anim in ipairs(game0.animations) do
     anim:draw()
   end
+  --game1:draw()
 end
 
 function love.joystickpressed(_, b)
-  if b == 0 and not revealsnd:isPlaying() and not misssnd:isPlaying() then
+  if b == 0 then
     local x, y = game0:button_reveal()
     if x and y then
       --revealsnd:play()
